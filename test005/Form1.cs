@@ -11,6 +11,7 @@ using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data.Common;
+using System.IO;
 
 namespace test005
 {
@@ -18,6 +19,7 @@ namespace test005
     {
         
         OleDbConnection OleDbcon;
+        string fl;
 
         public Form1()
         {
@@ -33,6 +35,11 @@ namespace test005
 
            
             openFileDialog.ShowDialog();
+
+            string fileName = Path.GetFileName(openFileDialog.FileName);
+            fl = fileName.Substring(0, fileName.IndexOf("."));
+            
+
 
 
             if (!string.IsNullOrEmpty(openFileDialog.FileName))
@@ -93,7 +100,7 @@ namespace test005
                 try
                 {
 
-                    createTableQuery = @"Create Table " + comboBox1.Text + " ( " ; 
+                    createTableQuery = @"Create Table "+comboBox1.Text+fl+" ( " ; 
                    
 
                             for (int j = 0; j < salesData.Columns.Count; j++)
@@ -130,7 +137,7 @@ namespace test005
                 
                 using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(sqlconnection))
                 {
-                    sqlBulkCopy.DestinationTableName = "allmm";
+                    sqlBulkCopy.DestinationTableName = comboBox1.Text+fl;
 
                     foreach (var column in salesData.Columns)
                         sqlBulkCopy.ColumnMappings.Add(column.ToString(), column.ToString());
